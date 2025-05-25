@@ -1,4 +1,4 @@
-﻿using CS_CarteiraRest.Model;
+using CS_CarteiraRest.Model;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
@@ -6,13 +6,17 @@ namespace CarteiraRestClientConsole
 {
     internal class Program
     {
+        // Criação de uma instância estática do HttpClient para fazer requisições HTTP
         static readonly HttpClient client = new HttpClient();
         static async Task Main(string[] args)
         {
+            // URL base da API de carteiras
             string baseUrl = "http://localhost:5287/api/Carteiras";
 
+            // Realiza uma requisição GET para listar as carteiras existentes
             await GetCarteira(baseUrl);
 
+            // Cria uma nova carteira para ser enviada via POST
             var novaCarteira = new Carteira
             {
                 Nome = "Kim",
@@ -20,27 +24,33 @@ namespace CarteiraRestClientConsole
                 Saldo = 100
             };
 
+            // Envia a nova carteira para a API
             await PostCarteira(baseUrl, novaCarteira);
 
+            // Realiza novamente uma requisição GET para verificar se a carteira foi adicionada
             await GetCarteira(baseUrl);
         }
+
+        // Método que realiza uma requisição GET para buscar as carteiras cadastradas
         static async Task GetCarteira(string url)
         {
-            Console.WriteLine("\n Entrou no GetCriptoCoins");
+            // Envia a requisição GET
             var response = await client.GetAsync(url);
-            //Console.WriteLine("\n Response GET: " + response);
+            // Lê o conteúdo da resposta como string
             var carteiras = await response.Content.ReadAsStringAsync();
-            //Console.WriteLine("\n criptoCoins GET: " + criptoCoins);
-            Console.WriteLine("\n Reposta GET: " + carteiras);
+            // Exibe o conteúdo retornado
+            Console.WriteLine("\n Resposta GET: " + carteiras);
         }
 
+        // Método que realiza uma requisição POST para cadastrar uma nova carteira
         static async Task PostCarteira(string url, Carteira novaCarteira)
         {
-            Console.WriteLine("\n Entrou no PostCriptoCoin");
+            // Envia a carteira no corpo da requisição como JSON
             var response = await client.PostAsJsonAsync(url, novaCarteira);
-            //Console.WriteLine("\n Response POST: " + response);
+            // Lê o conteúdo da resposta como string
             var resposta = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("\n Reposta POST: " + resposta);
+            // Exibe a resposta da API (pode ser uma confirmação ou erro)
+            Console.WriteLine("\n Resposta POST: " + resposta);
         }
 
     }
